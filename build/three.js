@@ -40011,10 +40011,15 @@ THREE.ArrowHelper = ( function () {
 	var lineGeometry = new THREE.Geometry();
 	lineGeometry.vertices.push( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 1, 0 ) );
 
-	var coneGeometry = new THREE.CylinderGeometry( 0, 0.5, 1, 5, 1 );
-	coneGeometry.translate( 0, - 0.5, 0 );
 
-	return function ArrowHelper( dir, origin, length, color, headLength, headWidth ) {
+	return function ArrowHelper( dir, origin, length, color, headLength, headWidth, parameters ) {
+		
+		var radialSegments = parameters.radialSegments || 5;
+		
+		var coneGeometry = new THREE.CylinderGeometry( 0, 0.5, 1, radialSegments, 1 );
+		coneGeometry.translate( 0, - 0.5, 0 );
+		
+		
 
 		// dir is assumed to be normalized
 
@@ -40024,10 +40029,14 @@ THREE.ArrowHelper = ( function () {
 		if ( length === undefined ) length = 1;
 		if ( headLength === undefined ) headLength = 0.2 * length;
 		if ( headWidth === undefined ) headWidth = 0.2 * headLength;
+		
+		var linewidth = parameters.linewidth || 1;
 
 		this.position.copy( origin );
 		
-		this.line = new THREE.Line( lineGeometry, new THREE.LineBasicMaterial( { color: color } ) );
+		var lineMaterial = new THREE.LineBasicMaterial( { color: color, 
+															linewidth: linewidth} );
+		this.line = new THREE.Line( lineGeometry, lineMaterial );
 		this.line.matrixAutoUpdate = false;
 		this.add( this.line );
 
